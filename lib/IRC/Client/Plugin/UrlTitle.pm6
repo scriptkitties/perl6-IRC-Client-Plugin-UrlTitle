@@ -11,13 +11,6 @@ use URL::Find;
 #| IRC channel messages
 class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 {
-	has  $.ua; #= The UserAgent to use to make the HTTP requests
-
-	#| Instantiate a new IRC::Client::Plugin::UrlTitle
-	#method new()
-	#{
-	#}
-
 	#| Check every message for possible URLs. The original event will be passed
 	#| along for other plugins to handle as well.
 	method irc-privmsg-channel(
@@ -26,6 +19,8 @@ class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 		# Configure HTTP::UserAgent
 		$!ua = HTTP::UserAgent.new;
 		$!ua.timeout = 10;
+
+		# Get all URLs in the message
 		my @urls = find-urls($e.text);
 
 		for @urls -> $url {
