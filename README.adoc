@@ -37,7 +37,8 @@ sub MAIN
 - Set a custom `UserAgent` header
 - Be able to handle specific domains differently, for instance using a
   dedicated API
-  - YouTube
+-- YouTube
+- Add colors to output (preferably able to turn on/off via a config)
 
 == License
 This sourcecode is distributed under the GPLv3 license.
