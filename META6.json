@@ -12,8 +12,7 @@
   "name": "IRC::Client::Plugin::UrlTitle",
   "perl": "6.c",
   "provides": {
-    "IRC::Client::Plugin::UrlTitle": "lib/IRC/Client/Plugin/UrlTitle.pm6",
-    "IRC::Client::Plugin::UrlTitle::UrlGrammar": "lib/IRC/Client/Plugin/UrlTitle/UrlGrammar.pm6"
+    "IRC::Client::Plugin::UrlTitle": "lib/IRC/Client/Plugin/UrlTitle.pm6"
   },
   "resources": [
     
