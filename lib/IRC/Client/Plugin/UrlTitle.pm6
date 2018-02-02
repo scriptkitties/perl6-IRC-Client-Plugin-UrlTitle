@@ -63,9 +63,10 @@ class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 		}
 	}
 
+	#| Apply formatting to the output text sent back to the IRC channel.
 	method !format-text(
-		Str:D $url,
-		Str:D $message,
+		Str:D $url,     #= The URL being checked
+		Str:D $message, #= The message containing the title
 		--> Str
 	) {
 		irc-style-text($url, :color<blue>) ~ ": " ~ $message;
