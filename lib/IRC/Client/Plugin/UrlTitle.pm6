@@ -17,14 +17,14 @@ class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 		$e, #= The IRC event which triggered this method.
 	) {
 		# Configure HTTP::UserAgent
-		$!ua = HTTP::UserAgent.new;
-		$!ua.timeout = 10;
+		my HTTP::UserAgent $ua .= new;
+		$ua.timeout = 10;
 
 		# Get all URLs in the message
 		my @urls = find-urls($e.text);
 
 		for @urls -> $url {
-			my $response = $!ua.get($url);
+			my $response = $ua.get($url);
 
 			if ($response.is-success) {
 				my HTML::Parser::XML $parser .= new;
