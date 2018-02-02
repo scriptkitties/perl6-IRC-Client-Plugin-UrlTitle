@@ -19,12 +19,12 @@ class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 		# Get all URLs in the message
 		my @urls = find-urls($e.text);
 
-		race for @urls.race :batch -> $url {
+		@urls.race(:batch).map: {
 			$e.irc.send(
 				where => $e.channel,
-				text => "$url: " ~ self!resolve($url),
+				text => "$^url: " ~ self!resolve($^url),
 			);
-		}
+		};
 
 		$.NEXT;
 	}
