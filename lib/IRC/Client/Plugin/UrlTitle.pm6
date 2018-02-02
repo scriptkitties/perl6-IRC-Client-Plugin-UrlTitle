@@ -16,52 +16,50 @@ class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 	method irc-privmsg-channel(
 		$e, #= The IRC event which triggered this method.
 	) {
+		# Get all URLs in the message
+		my @urls = find-urls($e.text);
+
+		race for @urls -> $url {
+			$e.irc.send(
+				where => $e.channel,
+				text => "$url: " ~ self!resolve($url),
+			);
+		}
+
+		$.NEXT;
+	}
+
+	#| Resolve a given $url to the title tag, if possible.
+	method !resolve(
+		Str $url, #= The URL to try and resolve
+		--> Str
+	) {
 		# Configure HTTP::UserAgent
 		my HTTP::UserAgent $ua .= new;
 		$ua.timeout = 10;
 
-		# Get all URLs in the message
-		my @urls = find-urls($e.text);
-
-		for @urls -> $url {
-			try {
-				CATCH {
-					$e.irc.send(
-						where => $e.channel,
-						text => "$url: {~$_}",
-					);
-				}
-
-				my $response = $ua.get($url);
-
-				if ($response.is-success) {
-					my HTML::Parser::XML $parser .= new;
-					$parser.parse($response.content);
-
-					my $head =  $parser.xmldoc.root.elements(:TAG<head>, :SINGLE);
-					return $.NEXT if $head ~~ Bool;
-
-					my $title-tag = $head.elements(:TAG<title>, :SINGLE);
-					return $.NEXT if $title-tag ~~ Bool;
-
-					my $title = $title-tag.contents[0].text;
-
-					$e.irc.send(
-						where => $e.channel,
-						text => "$url: $title",
-					);
-
-					return $.NEXT;
-				}
-
-				$e.irc.send(
-					where => $e.channel,
-					text => "$url: " ~ $response.status-line,
-				);
+		try {
+			CATCH {
+				return ~$_;
 			}
-		}
 
-		$.NEXT;
+			my $response = $ua.get($url);
+
+			if ($response.is-success) {
+				my HTML::Parser::XML $parser .= new;
+				$parser.parse($response.content);
+
+				my $head = $parser.xmldoc.root.elements(:TAG<head>, :SINGLE);
+				return "No title tag" if $head ~~ Bool;
+
+				my $title-tag = $head.elements(:TAG<title>, :SINGLE);
+				return "No title tag" if $title-tag ~~ Bool;
+
+				return $title-tag.contents[0].text;
+			}
+
+			return $response.status-line,
+		}
 	}
 }
 
