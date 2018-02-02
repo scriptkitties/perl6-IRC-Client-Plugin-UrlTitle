@@ -5,6 +5,7 @@ use v6.c;
 use HTML::Parser::XML;
 use HTTP::UserAgent;
 use IRC::Client;
+use IRC::TextColor;
 use URL::Find;
 
 #| An IRC::Client plugin to post the title of webpages which are referenced in
@@ -22,7 +23,7 @@ class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 		@urls.race(:batch).map: {
 			$e.irc.send(
 				where => $e.channel,
-				text => "$^url: " ~ self!resolve($^url),
+				text => self!format-text($^url, self!resolve($^url)),
 			);
 		};
 
@@ -40,7 +41,7 @@ class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 
 		try {
 			CATCH {
-				return ~$_;
+				return irc-style-text(~$_, :color<red>);
 			}
 
 			my $response = $ua.get($url);
@@ -58,8 +59,16 @@ class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 				return $title-tag.contents[0].text;
 			}
 
-			return $response.status-line,
+			return irc-style-text($response.status-line, :color<yellow>),
 		}
+	}
+
+	method !format-text(
+		Str:D $url,
+		Str:D $message,
+		--> Str
+	) {
+		irc-style-text($url, :color<blue>) ~ ": " ~ $message;
 	}
 }
 

@@ -38,7 +38,6 @@ sub MAIN
 * Be able to handle specific domains differently, for instance using a
   dedicated API
 ** YouTube
-* Add colors to output (preferably able to turn on/off via a config)
 
 == License
 This sourcecode is distributed under the GPLv3 license.
