@@ -4,6 +4,7 @@
     "HTML::Parser::XML",
     "HTTP::UserAgent",
     "IRC::Client",
+    "IRC::TextColor",
     "URL::Find"
   ],
   "description": "Plugin for IRC::Client to report titles of URLs posted in IRC channels",

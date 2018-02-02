@@ -24,23 +24,39 @@ class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 		my @urls = find-urls($e.text);
 
 		for @urls -> $url {
-			my $response = $ua.get($url);
+			try {
+				CATCH {
+					$e.irc.send(
+						where => $e.channel,
+						text => "$url: {~$_}",
+					);
+				}
 
-			if ($response.is-success) {
-				my HTML::Parser::XML $parser .= new;
-				$parser.parse($response.content);
+				my $response = $ua.get($url);
 
-				my $head =  $parser.xmldoc.root.elements(:TAG<head>, :SINGLE);
-				return $.NEXT if $head ~~ Bool;
+				if ($response.is-success) {
+					my HTML::Parser::XML $parser .= new;
+					$parser.parse($response.content);
 
-				my $title-tag = $head.elements(:TAG<title>, :SINGLE);
-				return $.NEXT if $title-tag ~~ Bool;
+					my $head =  $parser.xmldoc.root.elements(:TAG<head>, :SINGLE);
+					return $.NEXT if $head ~~ Bool;
 
-				my $title = $title-tag.contents[0].text;
+					my $title-tag = $head.elements(:TAG<title>, :SINGLE);
+					return $.NEXT if $title-tag ~~ Bool;
+
+					my $title = $title-tag.contents[0].text;
+
+					$e.irc.send(
+						where => $e.channel,
+						text => "$url: $title",
+					);
+
+					return $.NEXT;
+				}
 
 				$e.irc.send(
 					where => $e.channel,
-					text => "$url: $title",
+					text => "$url: " ~ $response.status-line,
 				);
 			}
 		}
