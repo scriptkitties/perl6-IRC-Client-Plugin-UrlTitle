@@ -12,6 +12,16 @@ use URL::Find;
 #| IRC channel messages
 class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 {
+	has HTTP::UserAgent $!ua;
+
+	#| Set up the class variables.
+	method TWEAK
+	{
+		# Instantiate the HTTP::UserAgent
+		$!ua .= new;
+		$!ua.timeout = 10;
+	}
+
 	#| Check every message for possible URLs. The original event will be passed
 	#| along for other plugins to handle as well.
 	method irc-privmsg-channel(
@@ -35,16 +45,12 @@ class IRC::Client::Plugin::UrlTitle does IRC::Client::Plugin
 		Str $url, #= The URL to try and resolve
 		--> Str
 	) {
-		# Configure HTTP::UserAgent
-		my HTTP::UserAgent $ua .= new;
-		$ua.timeout = 10;
-
 		try {
 			CATCH {
 				return irc-style-text(~$_, :color<red>);
 			}
 
-			my $response = $ua.get($url);
+			my $response = $!ua.get($url);
 
 			if ($response.is-success) {
 				my HTML::Parser::XML $parser .= new;

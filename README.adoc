@@ -32,12 +32,5 @@ sub MAIN
 }
 ----
 
-== Roadmap
-* Create the HTTP::UserAgent object only once
-* Set a custom `UserAgent` header
-* Be able to handle specific domains differently, for instance using a
-  dedicated API
-** YouTube
-
 == License
 This sourcecode is distributed under the GPLv3 license.
