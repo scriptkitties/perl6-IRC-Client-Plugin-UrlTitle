@@ -8,9 +8,7 @@ use IRC::Client::Plugin::UrlTitle::TypeFormatters::HTML;
 
 unit module IRC::Client::Plugin::UrlTitle::TypeFormatters;
 
-subset ImageType of Str where {
-	$_.starts-with("image/");
-}
+subset HtmlType of Str where * ~~ /^text\/html/;
 
 #| Generic formatter, used when the Content-Type isn't matched with any
 #| specific types.
@@ -36,6 +34,6 @@ multi sub format-type(
 }
 
 # Content specific formatting
-multi sub format-type(HTTP::Response:D $r, "text/html" --> Str) is export { format-html($r) }
+multi sub format-type(HTTP::Response:D $r, HtmlType:D $ --> Str) is export { format-html($r) }
 
 # vim: ft=perl6 noet

@@ -2,6 +2,7 @@
 
 use v6.c;
 
+use HTML::Entity;
 use HTML::Parser::XML;
 use HTTP::UserAgent;
 
@@ -21,7 +22,7 @@ sub format-html(
 	my $title-tag = $head.elements(:TAG<title>, :SINGLE);
 	return "No title tag" if $title-tag ~~ Bool;
 
-	return $title-tag.contents[0].text;
+	decode-entities($title-tag.contents[0].text);
 }
 
 # vim: ft=perl6 noet
