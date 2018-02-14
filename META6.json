@@ -16,7 +16,7 @@
   "perl": "6.c",
   "provides": {
     "IRC::Client::Plugin::UrlTitle": "lib/IRC/Client/Plugin/UrlTitle.pm6",
-    "IRC::Client::Plugin::UrlTitle::TypeFormatter": "lib/IRC/Client/Plugin/UrlTitle/TypeFormatter.pm6",
+    "IRC::Client::Plugin::UrlTitle::TypeFormatters": "lib/IRC/Client/Plugin/UrlTitle/TypeFormatters.pm6",
     "IRC::Client::Plugin::UrlTitle::TypeFormatters::HTML": "lib/IRC/Client/Plugin/UrlTitle/TypeFormatters/HTML.pm6"
   },
   "resources": [
